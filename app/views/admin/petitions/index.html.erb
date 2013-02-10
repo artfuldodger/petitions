@@ -1,0 +1,7 @@
+<%= link_to 'New Petition', new_admin_petition_path, class: 'btn btn-primary' %>
+
+<ul>
+  <% @petitions.each do |petition| %>
+    <li><%= petition.title %></li>
+  <% end %>
+</ul>
