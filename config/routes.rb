@@ -4,7 +4,9 @@ Petitions::Application.routes.draw do
   post 'signin' => "sessions#create"
   get 'signout' => "sessions#destroy"
 
+  resources :petitions, only: [:index, :show]
+
   namespace :admin do
-    resources :petitions
+    resources :petitions, except: [:show]
   end
 end

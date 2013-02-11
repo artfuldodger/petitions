@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
   end
 
   def require_no_user
-    redirect_to petitions_url if current_user
+    case
+    when current_user.try(:admin?) then redirect_to admin_petitions_url
+    when current_user.present?     then redirect_to petitions_url
+    end
   end
 
   def require_admin

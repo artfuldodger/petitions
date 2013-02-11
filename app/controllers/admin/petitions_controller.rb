@@ -1,12 +1,10 @@
 module Admin
   class PetitionsController < AdminController
-    before_filter :get_petition, only: [:show, :edit, :update]
+    before_filter :get_petition, only: [:show, :edit, :update, :destroy]
 
     def index
       @petitions = Petition.order('id desc')
     end
-
-    def show; end
 
     def new
       @petition = Petition.new
@@ -15,7 +13,7 @@ module Admin
     def create
       @petition = current_user.petitions.new(params[:petition])
       if @petition.save
-        redirect_to admin_petition_url(@petition), flash: { success: "Petition successfully created." }
+        redirect_to admin_petitions_url, flash: { success: "Petition successfully created." }
       else
         render :new
       end
@@ -25,10 +23,15 @@ module Admin
 
     def update
       if @petition.update_attributes(params[:petition])
-        redirect_to admin_petition_url(@petition), flash: { success: "Petition successfully updated." }
+        redirect_to admin_petitions_url, flash: { success: "Petition successfully updated." }
       else
         render :edit
       end
+    end
+
+    def destroy
+      @petition.update_attribute(:deleted_at, Time.now)
+      redirect_to admin_petitions_url, flash: { success: "Petition has been deleted." }
     end
 
     private

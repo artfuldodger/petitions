@@ -23,13 +23,6 @@ module Admin
       end
     end
 
-    describe 'a GET to :show' do
-      it 'assigns to @petition' do
-        get :show, id: petition.id
-        assigns(:petition).should == petition
-      end
-    end
-
     describe 'a POST to :create' do
       context 'when the petition is valid' do
         let(:action) { ->{ post :create, petition: { title: 'New Petition', description: '<p>Sign our petition, please.</p>' } } }
@@ -45,9 +38,9 @@ module Admin
           Petition.last.user.should == admin
         end
 
-        it 'redirects to the petition' do
+        it 'redirects to the petition index' do
           action.call
-          response.should redirect_to admin_petition_url(Petition.last)
+          response.should redirect_to admin_petitions_url
         end
 
         it 'sets the flash' do
@@ -84,9 +77,9 @@ module Admin
 
       context 'when it successfully updates' do
         before { Petition.any_instance.stub(update_attributes: true) }
-        it 'redirects to the petition' do
+        it 'redirects to the petition index' do
           action.call
-          response.should redirect_to admin_petition_url(petition)
+          response.should redirect_to admin_petitions_url
         end
 
         it 'sets the flash' do
@@ -102,6 +95,28 @@ module Admin
           action.call
           response.should render_template :edit
         end
+      end
+    end
+
+    describe 'a DELETE to :destroy' do
+      let(:action) { -> { delete :destroy, id: petition.id } }
+
+      it 'sets deleted_at on the petition' do
+        petition.deleted_at.should be_nil
+        Timecop.freeze(Time.now) do
+          action.call
+          petition.reload.deleted_at.should == Time.now
+        end
+      end
+
+      it 'redirects to the petition index' do
+        action.call
+        response.should redirect_to admin_petitions_url
+      end
+
+      it 'sets the flash' do
+        action.call
+        flash[:success].should == 'Petition has been deleted.'
       end
     end
   end
