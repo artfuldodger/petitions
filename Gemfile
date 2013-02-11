@@ -24,4 +24,5 @@ group :development, :test do
   gem 'autotest-rails'
   gem 'ZenTest', '4.8.3'
   gem 'shoulda-matchers'
+  gem 'timecop'
 end
