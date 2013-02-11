@@ -1,5 +1,6 @@
 class Petition < ActiveRecord::Base
   belongs_to :user
+  has_many :signatures
 
   validates :title, :description, presence: true
   attr_accessible :description, :title, :type, :deleted_at
